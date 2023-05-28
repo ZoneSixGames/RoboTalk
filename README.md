@@ -19,7 +19,7 @@ To run the application, follow these steps:
 2. Navigate to the project directory:
 
    ```shell
-   cd your-repo
+   cd RobotTalk
    ```
 
 3. Install the required dependencies:
