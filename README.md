@@ -2,6 +2,10 @@
 
 The RoboTalk Podcast Creator is an application that helps you generate podcast scripts based on a given topic, conduct research on the topic, and create an audio podcast from the generated script.
 
+## Requirements
+
+This application requires API keys from https://openai.com for script completion and https://elevenlabs.io for speech generation.
+
 ## Installation
 
 To run the application, follow these steps:
