@@ -2,10 +2,6 @@
 
 The RoboTalk Podcast Creator is an application that helps you generate podcast scripts based on a given topic, conduct research on the topic, and create an audio podcast from the generated script.
 
-# Zone Six Podcast Creator
-
-The Zone Six Podcast Creator is an application that helps you generate podcast scripts based on a given topic, conduct research on the topic, and create an audio podcast from the generated script.
-
 ## Installation
 
 To run the application, follow these steps:
