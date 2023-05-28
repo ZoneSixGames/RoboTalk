@@ -1,0 +1,10 @@
+dotenv
+streamlit
+requests
+beautifulsoup4
+langchain
+elevenlabs
+urllib3
+feedparser
+pydub
+nltk
