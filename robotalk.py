@@ -21,9 +21,12 @@ load_dotenv()
 API_KEYS = {
     'OPENAI_API_KEY': os.getenv('OPENAI_API_KEY'),
     'ELEVENLABS_API_KEY': os.getenv('ELEVENLABS_API_KEY'),
-    'ELEVENLABS_VOICE_1_ID': os.getenv('ELEVENLABS_VOICE_1_ID')
+    'ELEVENLABS_VOICE_1_ID': os.getenv('ELEVENLABS_VOICE_1_ID'),
+    'ELEVENLABS_VOICE_2_ID': os.getenv('ELEVENLABS_VOICE_2_ID'),
+    'ELEVENLABS_VOICE_3_ID': os.getenv('ELEVENLABS_VOICE_3_ID'),
+    'GOOGLE_CSE_ID': os.getenv('CUSTOM_SEARCH_ENGINE_ID'),
+    'GOOGLE_API_KEY': os.getenv('GOOGLE_API_KEY'),
 }
-
 
 # Application Framework
 st.title('RoboTalk Podcast Creator by Zone Six')
