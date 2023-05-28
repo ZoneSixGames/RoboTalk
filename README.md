@@ -4,7 +4,7 @@ The RoboTalk Podcast Creator is an application that helps you conduct research o
 
 ## Requirements
 
-This application requires API keys from https://openai.com for script completion and https://elevenlabs.io for speech generation.
+This application requires API keys from Google Search Engine (https://console.cloud.google.com/) for current articles to research, https://openai.com for news summarization and script creation, and https://elevenlabs.io for speech generation.
 
 ## Installation
 
@@ -36,6 +36,8 @@ To run the application, follow these steps:
    OPENAI_API_KEY=<your_openai_api_key>
    ELEVENLABS_API_KEY=<your_elevenlabs_api_key>
    ELEVENLABS_VOICE_1_ID=<your_elevenlabs_voice_1_id>
+   GOOGLE_API_KEY=<your_google_api_key>
+   CUSTOM_SEARCH_ENGINE_ID=<your_google_search_engine_id>
    ```
 
    Replace `<your_openai_api_key>`, `<your_elevenlabs_api_key>`, and other placeholders with your actual API keys.
