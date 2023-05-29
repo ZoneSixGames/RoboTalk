@@ -215,14 +215,14 @@ st.write(f'Script: \n{st.session_state.script}')
 # Define the available voice options
 voice_options = {
     
-    'Rachel': API_KEYS['ELEVENLABS_VOICE_1_ID'],
-    'Domi': API_KEYS['ELEVENLABS_VOICE_2_ID'],
-    'Bella': API_KEYS['ELEVENLABS_VOICE_3_ID'],
-    'Antoni': API_KEYS['ELEVENLABS_VOICE_4_ID'],
-    'Elli': API_KEYS['ELEVENLABS_VOICE_5_ID'],
-    'Josh': API_KEYS['ELEVENLABS_VOICE_6_ID'], 
-    'Arnold': API_KEYS['ELEVENLABS_VOICE_7_ID'],
-    'Adam': API_KEYS['ELEVENLABS_VOICE_8_ID'],
+    'Voice 1': API_KEYS['ELEVENLABS_VOICE_1_ID'],
+    'Voice 2': API_KEYS['ELEVENLABS_VOICE_2_ID'],
+    'Voice 3': API_KEYS['ELEVENLABS_VOICE_3_ID'],
+    'Voice 4': API_KEYS['ELEVENLABS_VOICE_4_ID'],
+    'Voice 5': API_KEYS['ELEVENLABS_VOICE_5_ID'],
+    'Voice 6': API_KEYS['ELEVENLABS_VOICE_6_ID'], 
+    'Voice 7': API_KEYS['ELEVENLABS_VOICE_7_ID'],
+    'Voice 8': API_KEYS['ELEVENLABS_VOICE_8_ID'],
 }
 
 # Allow the user to choose a voice
