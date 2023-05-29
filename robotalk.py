@@ -55,16 +55,18 @@ openai_llm = OpenAI(model_name="gpt-3.5-turbo") # Initialize the OpenAI LLM
 
 # Define templates
 title = PromptTemplate.from_template("Write a witty, funny, or ironic podcast title about {topic}.")
-script = PromptTemplate.from_template("Write a first person editorial article based on a given title, research, and unique author personality. Title: {title}, Research: {news_research}, {p1_name}: {p1}. The article should start by giving an introduction to the topic and then offering an opinion based on the personality of the author.")
-cont_script = PromptTemplate.from_template("Continue writing a podcast script based on a given title, research, recent podcast discussion history. Title: {title}, Research: {research}, Script: {script}")
+script = PromptTemplate.from_template("Write a first person editorial podcast based on a given title, research, and unique author personality. Title: {title}, Research: {news_research}, Personality: {p1_name}: {p1}. The article should start by giving an introduction to the topic and then offering an opinion based on the personality of the author. Do not use formal words like 'in conclusion' or 'however' or 'furthermore'.")
+#cont_script = PromptTemplate.from_template("Continue writing a podcast script based on a given title, research, recent podcast discussion history. Title: {title}, Research: {research}, Script: {script}")
 news = PromptTemplate.from_template("Summarize this news story: {story}")
+research = PromptTemplate.from_template("Summarize the research into talking points: {research}")
 
 # Initialize chains
 chains = {
     'title': LLMChain(llm=openai_llm, prompt=title, verbose=True, output_key='title'),
     'script': LLMChain(llm=openai_llm, prompt=script, verbose=True, output_key='script'),
-    'cont_script': LLMChain(llm=openai_llm, prompt=cont_script, verbose=True, output_key='cont_script'),
+    #'cont_script': LLMChain(llm=openai_llm, prompt=cont_script, verbose=True, output_key='cont_script'),
     'news': LLMChain(llm=openai_llm, prompt=news, verbose=True, output_key='summary'),
+    'research': LLMChain(llm=openai_llm, prompt=research, verbose=True, output_key='research'),
 }
 
 # Initialize session state for script, research, title if they doesn't exist
@@ -74,8 +76,8 @@ if 'script' not in st.session_state:
 if 'title' not in st.session_state:
     st.session_state.title = "Podcast Title Will Appear Here"
     
-if 'cont_script' not in st.session_state:
-    st.session_state.cont_script = ""
+#if 'cont_script' not in st.session_state:
+    #st.session_state.cont_script = ""
     
 if 'news' not in st.session_state:
     st.session_state.news = ""
@@ -98,8 +100,8 @@ def extract_news_text(url):
     # Tokenize the story_text
     tokens = nltk.word_tokenize(story_text)
 
-    # Only keep the first 500 tokens
-    tokens = tokens[:1000]
+    # Only keep the first XXXX tokens
+    tokens = tokens[:2800]
 
     # Rejoin the tokens into a single string
     story_text = ' '.join(tokens)
@@ -155,24 +157,14 @@ def create_podcast_directory():
     return PODCAST_DIR  # Add this line
 
 def convert_script_to_audio(script_text):
-    # If script_text is a string, we generate audio for the whole script
-    available_voices = voices()
     selected_voice_id = VOICE_MAP[p1_name]
-    print(available_voices)  # Add this line to check the available voices
     print(selected_voice_id)  # Add this line to check the selected voice ID
     
-    # Find the voice instance with the selected ID
-    selected_voice = None
-    for voice in available_voices:
-        if voice.voice_id == selected_voice_id:  # Update the attribute name to 'voice_id'
-            selected_voice = voice
-            break
-    
-    if selected_voice is None:
+    if selected_voice_id is None:
         st.error("Selected voice not found.")
         return []
     
-    audio = generate(text=script_text, api_key=API_KEYS['ELEVENLABS_API_KEY'], voice=selected_voice)
+    audio = generate(text=script_text, api_key=API_KEYS['ELEVENLABS_API_KEY'], voice=selected_voice_id)
     audio_file = f"{st.session_state.podcast_dir}/podcast.mp3"  # Save in podcast directory
     save(audio=audio, filename=audio_file)
     print(audio_file)  # Add this line to check the audio file path
@@ -183,24 +175,24 @@ if st.button('Research') and validate_inputs(prompt, p1, p1_name):
     # Research and summarize top news stories
     stories = get_top_news_stories(prompt)
     news_summaries = summarize_news_stories(stories)
-    st.session_state.research = ' '.join(news_summaries)  # Join the list of summaries into a single string
+    research_summary = chains['research'].run(research=' '.join(news_summaries))  # Use the research chain
+    st.session_state.research = research_summary  # Store the research summary in the session state
     st.session_state.podcast_dir = create_podcast_directory()
     with open(f"{st.session_state.podcast_dir}/podcast_research.txt", 'w') as f:
         f.write(st.session_state.research)
     st.success(f"Research saved in {st.session_state.podcast_dir}/podcast_research.txt")
 
-
 if st.button('Generate Script') and validate_inputs(prompt, p1, p1_name):
     # Generate title
     title_result = chains['title'].run(topic=prompt)
-    st.session_state.title = title_result  # Saving title directly to session state.
+    st.session_state.title = title_result
 
     # Generate and display initial script
     script_result = chains['script'].run(
-        title=st.session_state.title, 
-        news_research=st.session_state.research, 
-        p1_name=p1_name, 
-        p1=p1, 
+        title=st.session_state.title,
+        news_research=st.session_state.research,  # Use the research summary
+        p1_name=p1_name,
+        p1=p1,
     )
     st.session_state.script = script_result
 
@@ -235,10 +227,9 @@ VOICE_MAP = {
 }
 
 if st.button('Create Podcast') and st.session_state.script:
-    audio_files = convert_script_to_audio(st.session_state.script)
+    audio_files = convert_script_to_audio(st.session_state.script)     
     if audio_files:
         st.audio(audio_files[0], format='audio/mp3')  # Use audio_files directly
-
     
 with st.expander('News Summaries'):
     st.write(st.session_state.research)
