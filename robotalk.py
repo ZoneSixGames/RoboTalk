@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from langchain import LLMChain, OpenAI # Import the correct class
 from langchain import PromptTemplate
 from langchain.utilities import GoogleSearchAPIWrapper
-from elevenlabs import generate, save
+from elevenlabs import generate, save, voices
 import urllib.parse
 import feedparser
 from datetime import datetime
@@ -24,21 +24,23 @@ API_KEYS = {
     'ELEVENLABS_VOICE_1_ID': os.getenv('ELEVENLABS_VOICE_1_ID'),
     'ELEVENLABS_VOICE_2_ID': os.getenv('ELEVENLABS_VOICE_2_ID'),
     'ELEVENLABS_VOICE_3_ID': os.getenv('ELEVENLABS_VOICE_3_ID'),
+    'ELEVENLABS_VOICE_4_ID': os.getenv('ELEVENLABS_VOICE_4_ID'),
+    'ELEVENLABS_VOICE_5_ID': os.getenv('ELEVENLABS_VOICE_5_ID'),
+    'ELEVENLABS_VOICE_6_ID': os.getenv('ELEVENLABS_VOICE_6_ID'),
+    'ELEVENLABS_VOICE_7_ID': os.getenv('ELEVENLABS_VOICE_7_ID'),
+    'ELEVENLABS_VOICE_8_ID': os.getenv('ELEVENLABS_VOICE_8_ID'),
     'GOOGLE_CSE_ID': os.getenv('CUSTOM_SEARCH_ENGINE_ID'),
     'GOOGLE_API_KEY': os.getenv('GOOGLE_API_KEY'),
 }
 
 # Application Framework
 st.title('RoboTalk Podcast Creator by Zone Six')
+
 # Collect the inputs
 prompt = st.text_input("Enter the podcast topic")
 p1_name = st.text_input("Host Name")
 p1 = st.text_input("Enter the personality for the Host")
 
-# Map character names to voices
-VOICE_MAP = {
-    p1_name: API_KEYS['ELEVENLABS_VOICE_1_ID'],
-}
 
 PODCAST_DIR = None
 
@@ -154,9 +156,26 @@ def create_podcast_directory():
 
 def convert_script_to_audio(script_text):
     # If script_text is a string, we generate audio for the whole script
-    audio = generate(text=script_text, api_key=API_KEYS['ELEVENLABS_API_KEY'], voice=API_KEYS['ELEVENLABS_VOICE_1_ID'])
+    available_voices = voices()
+    selected_voice_id = VOICE_MAP[p1_name]
+    print(available_voices)  # Add this line to check the available voices
+    print(selected_voice_id)  # Add this line to check the selected voice ID
+    
+    # Find the voice instance with the selected ID
+    selected_voice = None
+    for voice in available_voices:
+        if voice.voice_id == selected_voice_id:  # Update the attribute name to 'voice_id'
+            selected_voice = voice
+            break
+    
+    if selected_voice is None:
+        st.error("Selected voice not found.")
+        return []
+    
+    audio = generate(text=script_text, api_key=API_KEYS['ELEVENLABS_API_KEY'], voice=selected_voice)
     audio_file = f"{st.session_state.podcast_dir}/podcast.mp3"  # Save in podcast directory
     save(audio=audio, filename=audio_file)
+    print(audio_file)  # Add this line to check the audio file path
     return [audio_file]  # Return a list with one audio file
 
 #Operational Structure
@@ -193,11 +212,33 @@ if st.button('Generate Script') and validate_inputs(prompt, p1, p1_name):
 # Display script from session state
 st.write(f'Title: {st.session_state.title}')
 st.write(f'Script: \n{st.session_state.script}')
+# Define the available voice options
+voice_options = {
+    
+    'Rachel': API_KEYS['ELEVENLABS_VOICE_1_ID'],
+    'Domi': API_KEYS['ELEVENLABS_VOICE_2_ID'],
+    'Bella': API_KEYS['ELEVENLABS_VOICE_3_ID'],
+    'Antoni': API_KEYS['ELEVENLABS_VOICE_4_ID'],
+    'Elli': API_KEYS['ELEVENLABS_VOICE_5_ID'],
+    'Josh': API_KEYS['ELEVENLABS_VOICE_6_ID'], 
+    'Arnold': API_KEYS['ELEVENLABS_VOICE_7_ID'],
+    'Adam': API_KEYS['ELEVENLABS_VOICE_8_ID'],
+}
+
+# Allow the user to choose a voice
+selected_voice = st.selectbox("Select a voice", list(voice_options.keys()))
+
+# Map the selected voice to the corresponding voice ID
+
+VOICE_MAP = {
+    p1_name: voice_options[selected_voice] if selected_voice else None,
+}
 
 if st.button('Create Podcast') and st.session_state.script:
-    st.session_state['audio_files'] = convert_script_to_audio(st.session_state.script)
-    # Since there is only one audio file, we play the first one
-    st.audio(st.session_state['audio_files'][0], format='audio/mp3')
+    audio_files = convert_script_to_audio(st.session_state.script)
+    if audio_files:
+        st.audio(audio_files[0], format='audio/mp3')  # Use audio_files directly
+
     
 with st.expander('News Summaries'):
     st.write(st.session_state.research)
