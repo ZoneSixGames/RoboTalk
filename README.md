@@ -67,22 +67,10 @@ Once the application is running, you will see a web interface with the following
 
 The application will guide you through each step, and you can view the generated script and research summaries in the corresponding sections.
 
-## Dependencies
 
-The application uses the following Python dependencies:
 
-decouple==3.3
-streamlit==0.88.0
-requests==2.26.0
-beautifulsoup4==4.10.0
-langchain==0.1.1
-elevenlabs==1.0.1
-urllib3==1.26.7
-feedparser==6.0.8
-pydub==0.25.1
-nltk==3.6.5
 
-These dependencies will be installed automatically when you follow the installation instructions.
+
 
 ## Support
 
