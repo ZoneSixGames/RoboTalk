@@ -46,7 +46,7 @@ os.environ.update(API_KEYS)
 google_search_tool = GoogleSearchAPIWrapper()
 
 # Initialize OpenAI API
-openai_llm = ChatOpenAI(model_name="gpt-3.5-turbo")  # Initialize the OpenAI LLM
+openai_llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k")  # Initialize the OpenAI LLM
 
 # Define templates
 title = PromptTemplate.from_template("Write a witty, funny, or ironic podcast title about {topic}.")
@@ -126,7 +126,7 @@ def summarize_news_stories(stories):
 
             # Add summary to the list if it doesn't exceed the token limit
             summary_tokens = len(summary.split())  # rough token count
-            if total_tokens + summary_tokens <= 4000:
+            if total_tokens + summary_tokens <= 10000:
                 summaries.append(summary)
                 total_tokens += summary_tokens
             else:
