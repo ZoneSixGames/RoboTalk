@@ -1,5 +1,6 @@
 python-decouple
 streamlit
+python-dotenv
 requests
 beautifulsoup4
 langchain
@@ -8,3 +9,9 @@ urllib3
 feedparser
 pydub
 nltk
+bark
+openai
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+google-auth
